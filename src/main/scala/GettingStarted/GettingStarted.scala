@@ -1,3 +1,5 @@
+package GettingStarted
+
 // A comment!
 /* Another comment */
 /** A documentation comment */
