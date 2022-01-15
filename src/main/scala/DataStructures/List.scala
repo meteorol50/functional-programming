@@ -56,4 +56,45 @@ object List {
     case _ => l
   }
 
+  def dropWhileWithCurry[A](l: List[A])(f: A => Boolean): List[A] = l match {
+    case Cons(h, t) if f(h) => dropWhileWithCurry(t)(f)
+    case _ => l
+  }
+
+  def init[A](l: List[A]): List[A] = l match {
+    case Nil => sys.error("init of empty list")
+    case Cons(_, Nil) => Nil
+    case Cons(h, t) => Cons(h, init(t))
+  }
+
+  def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B =
+    as match {
+      case Nil => z
+      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+    }
+
+  def sum2(ns: List[Int]) =
+    foldRight(ns, 0)(_ + _)
+
+  def product2(ds: List[Double]) =
+    foldRight(ds, 1.0)(_ * _)
+
+  def length[A](l: List[A]): Int =
+    foldRight(l, 0)((_, acc) => acc + 1)
+
+  def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B =
+    as match {
+      case Nil => z
+      case Cons(h, t) => foldLeft(t, f(z, h))(f)
+  }
+
+  def sum3(ns: List[Int]) =
+    foldLeft(ns, 0)(_ + _)
+
+  def product3(ds: List[Double]) =
+    foldLeft(ds, 1.0)(_ * _)
+
+  def length3[A](l: List[A]): Int =
+    foldLeft(l, 0)((acc, _) => acc + 1)
+
 }
