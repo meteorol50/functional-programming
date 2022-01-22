@@ -67,6 +67,12 @@ object List {
     case Cons(h, t) => Cons(h, init(t))
   }
 
+  def append[A](a1: List[A], a2: List[A]): List[A] =
+    a1 match {
+      case Nil => a2
+      case Cons(h,t) => Cons(h, append(t, a2))
+    }
+
   def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B =
     as match {
       case Nil => z
@@ -99,5 +105,30 @@ object List {
 
   def reverse[A](l: List[A]): List[A] =
     foldLeft(l, List[A]())((acc,h) => Cons(h,acc))
+
+  def foldRightViaFoldLeft[A,B](l: List[A], z: B)(f: (A,B) => B): B =
+    foldLeft(reverse(l), z)((b, a) => f(a, b))
+
+  def foldRightViaFoldLeft_1[A,B](l: List[A], z: B)(f: (A,B) => B): B =
+    foldLeft(l, (b:B) => b)((g,a) => b => g(f(a,b)))(z)
+
+  def foldLeftViaFoldRight[A,B](l: List[A], z: B)(f: (B,A) => B): B =
+    foldRight(l, (b:B) => b)((a,g) => b => g(f(b,a)))(z)
+
+  /*
+    `append` simply replaces the `Nil` constructor of the first list with the second list, which is exactly the operation
+    performed by `foldRight`.
+    */
+  def appendViaFoldRight[A](l: List[A], r: List[A]): List[A] =
+    foldRight(l, r)(Cons(_,_))
+
+  def concat[A](l: List[List[A]]): List[A] =
+    foldRight(l, Nil: List[A])(append)
+
+  def add1(l: List[Int]): List[Int] =
+    foldRight(l, Nil: List[Int])((h, t) => Cons(h + 1, t))
+
+  def doubleToString(l: List[Double]): List[String] =
+    foldRight(l, Nil: List[String])((h, t) => Cons(h.toString, t))
 
 }
