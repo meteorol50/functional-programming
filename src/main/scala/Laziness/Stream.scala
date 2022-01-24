@@ -1,0 +1,5 @@
+package Laziness
+
+object Stream {
+
+}
